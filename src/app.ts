@@ -5,6 +5,8 @@ import { extname, parse } from 'path';
 
 const app = express();
 
+const port = process.env.PORT || "1337";
+
 app.get('/', async (req, res) => {
   const url = req.query.url as string;
   const filename = req.query.filename as string;
@@ -30,6 +32,6 @@ app.get('/', async (req, res) => {
   return res.end(pdf.content);
 });
 
-app.listen(80, () => {
-  console.info(`server started at http://localhost:${80}`);
+app.listen(port, () => {
+  console.info(`server started at http://localhost:${port}`);
 });
