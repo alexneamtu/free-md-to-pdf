@@ -5,7 +5,7 @@ import { extname, parse } from 'path';
 
 const app = express();
 
-const port = process.env.PORT || "1337";
+const port = process.env.PORT || '1337';
 
 app.get('/', async (req, res) => {
   const url = req.query.url as string;
@@ -26,7 +26,7 @@ app.get('/', async (req, res) => {
   }
 
   const { data } = await axios.get(url, { timeout: 1000 });
-  const pdf = await mdToPdf({ content: data });
+  const pdf = await mdToPdf({ content: data }, { launch_options: { args: ['--no-sandbox'] } });
   res.setHeader('Content-Disposition', `attachment; filename=${filename || 'output'}.pdf`);
 
   return res.end(pdf.content);
