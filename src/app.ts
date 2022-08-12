@@ -33,5 +33,5 @@ app.get('/', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.info(`server started at http://localhost:${port}`);
+  console.info(`server started at http://localhost:${port}.`);
 });
