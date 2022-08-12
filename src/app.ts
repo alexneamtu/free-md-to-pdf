@@ -1,7 +1,7 @@
 import axios from 'axios';
 import express from 'express';
-import { mdToPdf } from 'md-to-pdf';
-import { extname, parse } from 'path';
+import markdownPdf from 'markdown-pdf';
+import { extname } from 'path';
 
 const app = express();
 
@@ -26,10 +26,20 @@ app.get('/', async (req, res) => {
   }
 
   const { data } = await axios.get(url, { timeout: 1000 });
-  const pdf = await mdToPdf({ content: data }, { launch_options: { args: ['--no-sandbox'] } });
-  res.setHeader('Content-Disposition', `attachment; filename=${filename || 'output'}.pdf`);
+  const callback = (error: Error, buf: unknown) => {
+    if (error) {
+      return res.status(500).send(error);
+    }
 
-  return res.end(pdf.content);
+    res.set({
+      'Content-Disposition': `attachment; filename=${filename || 'output'}.pdf`,
+      'Content-Type': 'application/pdf',
+    });
+    res.send(buf);
+  };
+  markdownPdf()
+    .from.string(data)
+    .to.buffer({}, callback as unknown as () => void);
 });
 
 app.listen(port, () => {
